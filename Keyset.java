@@ -134,9 +134,9 @@ public class Keyset extends JPanel implements KeyListener {
             return "中P";
         } else if (isOKeyPressed) {
             return "強P";
-        } else if (isUKeyPressed || isJKeyPressed) {
-            return "掴み";
-        }
+        }// else if (isUKeyPressed || isJKeyPressed) {
+        //     return "掴み";
+        // }
         return "";
     }
 
@@ -155,7 +155,7 @@ public class Keyset extends JPanel implements KeyListener {
             case "強K" -> "images/KK.png";
             case "弱P" -> "images/JP.png";
             case "中P" -> "images/TP.png";
-            case "強P" -> "images/JP.png";
+            case "強P" -> "images/KP.png";
             default -> null;
         };
         if (imageName == null) return null;
