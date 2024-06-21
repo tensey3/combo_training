@@ -52,15 +52,15 @@ public class Keyset extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        updateKeyState(e, true);
-    }//キーが離された時
+        handleKeyState(e, true);
+    }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        updateKeyState(e, false);
+        handleKeyState(e, false);
     }
 
-    private void updateKeyState(KeyEvent e, boolean isPressed) {
+    private void handleKeyState(KeyEvent e, boolean isPressed) {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_A -> isAKeyPressed = isPressed;
@@ -91,7 +91,7 @@ public class Keyset extends JPanel implements KeyListener {
         }
     }
 
-    public  void updateDirection() {
+    public void updateDirection() {
         String newcomen = getDirection();
         if (!newcomen.isEmpty() && !newcomen.equals(lastDirection)) {
             ImageIcon icon = getDirectionIcon(newcomen);
@@ -122,23 +122,25 @@ public class Keyset extends JPanel implements KeyListener {
             return "←";
         } else if (isDKeyPressed) {
             return "→";
-        }else if (isJKeyPressed) {
+        } else if (isJKeyPressed) {
             return "弱K";
-        }else if (isKKeyPressed) {
+        } else if (isKKeyPressed) {
             return "中K";
-        }else if (isLKeyPressed) {
+        } else if (isLKeyPressed) {
             return "強K";
-        }else if (isUKeyPressed) {
+        } else if (isUKeyPressed) {
             return "弱P";
-        }else if (isIKeyPressed) {
+        } else if (isIKeyPressed) {
             return "中P";
-        }else if (isOKeyPressed) {
+        } else if (isOKeyPressed) {
             return "強P";
+        } else if (isUKeyPressed || isJKeyPressed) {
+            return "掴み";
         }
         return "";
     }
 
-    public  ImageIcon getDirectionIcon(String direction) {
+    public ImageIcon getDirectionIcon(String direction) {
         String imageName = switch (direction) {
             case "↖️" -> "images/up_left.png";
             case "↗︎" -> "images/up_right.png";
@@ -153,7 +155,7 @@ public class Keyset extends JPanel implements KeyListener {
             case "強K" -> "images/KK.png";
             case "弱P" -> "images/JP.png";
             case "中P" -> "images/TP.png";
-            case "強P" -> "images/JKP.png";
+            case "強P" -> "images/JP.png";
             default -> null;
         };
         if (imageName == null) return null;
