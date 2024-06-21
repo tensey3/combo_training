@@ -9,8 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-public class Flam extends JFrame {
+public class Flam extends JFrame implements Combo.ComboListener {
     public Timers timers; // Timersインスタンスをフィールドとして保持
+    private final JTextArea comboTextArea; // コンボ表示用のテキストエリア
 
     public Flam() {
         setTitle("Key Event Demo");
@@ -20,13 +21,21 @@ public class Flam extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        Keyset keyset = new Keyset(); // Keysetクラスのインスタンスを生成
+        Combo combo = new Combo();
+        combo.setComboListener(this); // リスナーを設定
+
+        Keyset keyset = new Keyset(combo); // Keysetクラスのインスタンスを生成
         mainPanel.add(keyset, BorderLayout.WEST); // Keysetクラスのインスタンスを左側に追加
 
         JTextArea timerTextArea = new JTextArea();
         timerTextArea.setEditable(false);
         timerTextArea.setFont(new Font("SansSerif", Font.PLAIN, 24));
         mainPanel.add(timerTextArea, BorderLayout.CENTER); // タイマー表示用のエリアを中央に追加
+
+        comboTextArea = new JTextArea();
+        comboTextArea.setEditable(false);
+        comboTextArea.setFont(new Font("SansSerif", Font.BOLD, 36));
+        mainPanel.add(comboTextArea, BorderLayout.EAST); // コンボ表示用のエリアを右側に追加
 
         timers = new Timers(timerTextArea, keyset); // Timersクラスのインスタンスを生成し、Keysetインスタンスを渡す
 
@@ -62,5 +71,11 @@ public class Flam extends JFrame {
                 gd.setFullScreenWindow(null); // フルスクリーンモードを解除する
             }
         });
+    }
+
+    @Override
+    public void onComboDetected(String combo) {
+        // GUIに波動拳を表示するための処理
+        SwingUtilities.invokeLater(() -> comboTextArea.setText(combo));
     }
 }

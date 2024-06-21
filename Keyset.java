@@ -29,9 +29,9 @@ public class Keyset extends JPanel implements KeyListener {
     private final Timer timer;
     private boolean updatePending = false;
     private final int imageSize;
-    private final combo combo; // Comboクラスのインスタンスを追加
+    private final Combo combo; // Comboクラスのインスタンスを追加
 
-    public Keyset() {
+    public Keyset(Combo combo) {
         setLayout(new BorderLayout());
 
         directionPanel = new JPanel();
@@ -45,7 +45,7 @@ public class Keyset extends JPanel implements KeyListener {
         imageSize = font.getSize();
 
         timer = new Timer();
-        combo = new combo(); // Comboクラスのインスタンスを初期化
+        this.combo = combo; // Comboクラスのインスタンスを初期化
     }
 
     @Override
