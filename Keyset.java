@@ -9,27 +9,28 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-public class Keyset extends JPanel implements KeyListener {
+public class KeySet extends JPanel implements KeyListener {
     private final JPanel directionPanel;
     private final JLabel currentDirectionLabel;
-    private boolean isAKeyPressed = false;
-    private boolean isWKeyPressed = false;
-    private boolean isSKeyPressed = false;
-    private boolean isDKeyPressed = false;
-    private boolean isSpaceKeyPressed = false;
-    private boolean isJKeyPressed = false;
-    private boolean isKKeyPressed = false;
-    private boolean isLKeyPressed = false;
-    private boolean isUKeyPressed = false;
-    private boolean isIKeyPressed = false;
-    private boolean isOKeyPressed = false;
+    private boolean aPressed = false;
+    private boolean wPressed = false;
+    private boolean sPressed = false;
+    private boolean dPressed = false;
+    private boolean spacePressed = false;
+    private boolean jPressed = false;
+    private boolean kPressed = false;
+    private boolean lPressed = false;
+    private boolean uPressed = false;
+    private boolean iPressed = false;
+    private boolean oPressed = false;
     private String lastDirection = "";
-    public final Timer timer;
-    private boolean isUpdatePending = false;
+    private final Timer timer;
+    private boolean updatePending = false;
     private final int imageSize;
 
-    public Keyset() {
+    public KeySet() {
         setLayout(new BorderLayout());
 
         directionPanel = new JPanel();
@@ -63,80 +64,80 @@ public class Keyset extends JPanel implements KeyListener {
     private void handleKeyState(KeyEvent e, boolean isPressed) {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
-            case KeyEvent.VK_A -> isAKeyPressed = isPressed;
-            case KeyEvent.VK_W -> isWKeyPressed = isPressed;
-            case KeyEvent.VK_S -> isSKeyPressed = isPressed;
-            case KeyEvent.VK_D -> isDKeyPressed = isPressed;
-            case KeyEvent.VK_SPACE -> isSpaceKeyPressed = isPressed;
-            case KeyEvent.VK_J -> isJKeyPressed = isPressed;
-            case KeyEvent.VK_K -> isKKeyPressed = isPressed;
-            case KeyEvent.VK_L -> isLKeyPressed = isPressed;
-            case KeyEvent.VK_U -> isUKeyPressed = isPressed;
-            case KeyEvent.VK_I -> isIKeyPressed = isPressed;
-            case KeyEvent.VK_O -> isOKeyPressed = isPressed;
+            case KeyEvent.VK_A -> aPressed = isPressed;
+            case KeyEvent.VK_W -> wPressed = isPressed;
+            case KeyEvent.VK_S -> sPressed = isPressed;
+            case KeyEvent.VK_D -> dPressed = isPressed;
+            case KeyEvent.VK_SPACE -> spacePressed = isPressed;
+            case KeyEvent.VK_J -> jPressed = isPressed;
+            case KeyEvent.VK_K -> kPressed = isPressed;
+            case KeyEvent.VK_L -> lPressed = isPressed;
+            case KeyEvent.VK_U -> uPressed = isPressed;
+            case KeyEvent.VK_I -> iPressed = isPressed;
+            case KeyEvent.VK_O -> oPressed = isPressed;
         }
         scheduleUpdate();
     }
 
     private void scheduleUpdate() {
-        if (!isUpdatePending) {
-            isUpdatePending = true;
+        if (!updatePending) {
+            updatePending = true;
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    updateDirection();
-                    isUpdatePending = false;
+                    SwingUtilities.invokeLater(() -> {
+                        updateDirection();
+                        updatePending = false;
+                    });
                 }
             }, 10); // 10ミリ秒の遅延
         }
     }
 
     public void updateDirection() {
-        String newcomen = getDirection();
-        if (!newcomen.isEmpty() && !newcomen.equals(lastDirection)) {
-            ImageIcon icon = getDirectionIcon(newcomen);
-            JLabel newDirectionLabel = new JLabel(icon); // 新しい方向のラベルを作成
-            directionPanel.add(newDirectionLabel, 0); // リストの先頭に追加する
+        String newDirection = getDirection();
+        if (!newDirection.isEmpty() && !newDirection.equals(lastDirection)) {
+            ImageIcon icon = getDirectionIcon(newDirection);
+            JLabel newDirectionLabel = new JLabel(icon);
+            directionPanel.add(newDirectionLabel, 0);
             directionPanel.revalidate();
-            lastDirection = newcomen;
-        } else if (newcomen.isEmpty()) {
+            lastDirection = newDirection;
+        } else if (newDirection.isEmpty()) {
             currentDirectionLabel.setIcon(null);
             lastDirection = "";
         }
     }
 
     public String getDirection() {
-        if ((isWKeyPressed || isSpaceKeyPressed) && isAKeyPressed) {
+        if ((wPressed || spacePressed) && aPressed) {
             return "↖️";
-        } else if ((isWKeyPressed || isSpaceKeyPressed) && isDKeyPressed) {
+        } else if ((wPressed || spacePressed) && dPressed) {
             return "↗︎";
-        } else if (isSKeyPressed && isAKeyPressed) {
+        } else if (sPressed && aPressed) {
             return "↙︎";
-        } else if (isSKeyPressed && isDKeyPressed) {
+        } else if (sPressed && dPressed) {
             return "↘︎";
-        } else if (isWKeyPressed || isSpaceKeyPressed) {
+        } else if (wPressed || spacePressed) {
             return "↑";
-        } else if (isSKeyPressed) {
+        } else if (sPressed) {
             return "↓";
-        } else if (isAKeyPressed) {
+        } else if (aPressed) {
             return "←";
-        } else if (isDKeyPressed) {
+        } else if (dPressed) {
             return "→";
-        } else if (isJKeyPressed) {
+        } else if (jPressed) {
             return "弱K";
-        } else if (isKKeyPressed) {
+        } else if (kPressed) {
             return "中K";
-        } else if (isLKeyPressed) {
+        } else if (lPressed) {
             return "強K";
-        } else if (isUKeyPressed) {
+        } else if (uPressed) {
             return "弱P";
-        } else if (isIKeyPressed) {
+        } else if (iPressed) {
             return "中P";
-        } else if (isOKeyPressed) {
+        } else if (oPressed) {
             return "強P";
-        }// else if (isUKeyPressed || isJKeyPressed) {
-        //     return "掴み";
-        // }
+        }
         return "";
     }
 
