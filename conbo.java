@@ -8,7 +8,7 @@ public class conbo {
         buttonMap.put(2, "↘︎");
         buttonMap.put(3, "→");
 
-        int[] combo = {1, 2, 3};
+        // int[] combo = {1, 2, 3}; // Remove this line
         String[] strength = {"弱", "中", "強"};
 
         // Simulating button presses
@@ -20,9 +20,10 @@ public class conbo {
         }
 
         if (comboString.toString().equals("↓↘︎→")) {
-            int pButtonPress = 2; // Replace with actual P button press
-            if (pButtonPress >= 0 && pButtonPress < strength.length) {
-                System.out.println("波動拳");
+            for (int pButtonPress : buttonMap.keySet()) {
+                if (pButtonPress >= 0 && pButtonPress < strength.length) {
+                    System.out.println("波動拳");
+                }
             }
         }
     }
