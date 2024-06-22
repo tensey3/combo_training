@@ -43,21 +43,7 @@ public class Flam extends JFrame {
         });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 画面作る処理
+    // 画面作る処理
     private void switchToFullScreen() {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         if (gd.isFullScreenSupported()) {
