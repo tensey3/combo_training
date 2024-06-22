@@ -29,6 +29,7 @@ public class Keyset extends JPanel implements KeyListener {
     private final Timer timer;
     private boolean updatePending = false;
     private final int imageSize;
+    private final combo combo; // Comboクラスのインスタンスを追加
 
     public Keyset() {
         setLayout(new BorderLayout());
@@ -44,6 +45,7 @@ public class Keyset extends JPanel implements KeyListener {
         imageSize = font.getSize();
 
         timer = new Timer();
+        combo = new combo(); // Comboクラスのインスタンスを初期化
     }
 
     @Override
@@ -54,6 +56,7 @@ public class Keyset extends JPanel implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         handleKeyState(e, true);
+        combo.addKey(e.getKeyCode()); // Comboクラスにキー入力を通知
     }
 
     @Override
@@ -160,7 +163,8 @@ public class Keyset extends JPanel implements KeyListener {
         }
         return directionBuilder.toString();
     }
-//画像パスを取得するメソッドです
+
+    //画像パスを取得するメソッドです
     private ImageIcon getDirectionIcon(String direction) {
         String imageName = switch (direction) {
             case "↖️" -> "images/up_left.png";
