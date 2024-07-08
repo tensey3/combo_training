@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Flam frame = new Flam();//ここでインスタンスかをしているようだね
-            frame.setVisible(true); //ここが大事だったんだんだね
+            frame.setVisible(true); //毎日草チャレンジ
         });
     }
 }
