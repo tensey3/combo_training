@@ -27,6 +27,8 @@ public class Timer {
         if (flam.get(lastIndex) > 99) {
             flam.set(lastIndex, 99); // カウンターを99で固定
             flam.add(1); // 新しいカウンターを1で開始
+        } else if (System.currentTimeMillis() % 17 == 0) {
+            flam.set(lastIndex, flam.get(lastIndex) + 1); // 0.017秒後にカウントを1増加
         }
 
         // カウンターを新しく作る
