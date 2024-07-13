@@ -9,13 +9,15 @@ public class Timers extends Keyset {
     private final List<String> directions;
     private final javax.swing.Timer swingTimer;
     private String lastDirection = "";
+    private final Keyset keyset; // Keysetインスタンスを保持
 
-    public Timers(JTextArea timerTextArea) {
+    public Timers(JTextArea timerTextArea, Keyset keyset) {
         this.timerTextArea = timerTextArea;
         this.flam = new ArrayList<>();
         this.directions = new ArrayList<>();
         this.flam.add(0); // 最初のカウンターを追加
         this.directions.add(""); // 最初の方向を追加
+        this.keyset = keyset; // Keysetインスタンスを設定
 
         // javax.swing.Timerを使ってカウントを更新
         swingTimer = new javax.swing.Timer(17, e -> SwingUtilities.invokeLater(this::updateCounters)); // 0.017秒ごとに実行
@@ -25,7 +27,7 @@ public class Timers extends Keyset {
     private void updateCounters() {
         // 最後のカウンターを更新
         int lastIndex = flam.size() - 1;
-        String newcomen = getDirection();
+        String newcomen = keyset.getDirection(); // Keysetから方向を取得
 
         // キーイベントを受け取ったらその時点のカウント数でストップ
         if (!newcomen.isEmpty() && !newcomen.equals(lastDirection)) {

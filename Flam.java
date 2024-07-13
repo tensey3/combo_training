@@ -7,8 +7,11 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 public class Flam extends JFrame {
+    private Timers timers; // Timersインスタンスをフィールドとして保持
+
     public Flam() {
         setTitle("Key Event Demo");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,42 +28,44 @@ public class Flam extends JFrame {
         timerTextArea.setFont(new Font("SansSerif", Font.PLAIN, 24));
         mainPanel.add(timerTextArea, BorderLayout.CENTER); // タイマー表示用のエリアを中央に追加
 
-        new Timers(timerTextArea); // なぜか警告出るけど動いてるからええか
+        timers = new Timers(timerTextArea, keyset); // Timersクラスのインスタンスを生成し、Keysetインスタンスを渡す
 
         add(mainPanel, BorderLayout.CENTER); // メインパネルをフレームに追加
 
         addKeyListener(keyset); // KeysetをKeyListenerとして追加
         setFocusable(true);
         requestFocusInWindow();
+
+        // フレームを表示する準備が整ったらフルスクリーンモードに切り替える
+        SwingUtilities.invokeLater(() -> {
+            switchToFullScreen();
+            setVisible(true);
+        });
+    }
+
+    private void switchToFullScreen() {
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        if (gd.isFullScreenSupported()) {
+            setUndecorated(true); // ウィンドウの装飾を無効にする
+            gd.setFullScreenWindow(this); // フルスクリーンモードに設定する
+        } else {
+            System.err.println("フルスクリーンモードはサポートされていません");
+            setSize(1300, 1200); // フォールバックとしてサイズを設定
+            setVisible(true);
+        }
+
+        // プログラム終了時にフルスクリーンモードを解除する処理を追加
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                gd.setFullScreenWindow(null); // フルスクリーンモードを解除する
+            }
+        });
     }
 
     public static void main(String[] args) {
-        Flam frame = new Flam();
-
-        // フルスクリーンモードに設定
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        if (gd.isFullScreenSupported()) {
-            frame.setUndecorated(true);
-            gd.setFullScreenWindow(frame);
-        } else {
-            System.err.println("フルスクリーンモードはサポートされていません");
-            frame.setSize(1300, 1200); // フォールバックとしてサイズを設定
-            frame.setVisible(true);
-        }
-
-        // レイアウトを再検証して再描画
-        frame.revalidate();
-        frame.repaint();
-
-        // プログラム終了時にフルスクリーンモードを解除
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                gd.setFullScreenWindow(null);
-            }
+        SwingUtilities.invokeLater(() -> {
+            new Flam();
         });
-
-        // フレームを可視化
-        frame.setVisible(true);
     }
 }
