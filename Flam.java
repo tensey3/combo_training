@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 public class Flam extends JFrame {
-    private Timers timers; // Timersインスタンスをフィールドとして保持
+    public Timers timers; // Timersインスタンスをフィールドとして保持
 
     public Flam() {
         setTitle("Key Event Demo");
