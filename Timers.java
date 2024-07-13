@@ -4,12 +4,12 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 public class Timers extends Keyset {
-    private final JTextArea timerTextArea;
-    private final List<Integer> flam;
-    private final List<String> directions;
-    private final javax.swing.Timer swingTimer;
-    private String lastDirection = "";
-    private final Keyset keyset; // Keysetインスタンスを保持
+    public final JTextArea timerTextArea;
+    public final List<Integer> flam;
+    public  final List<String> directions;
+    public  final javax.swing.Timer swingTimer;
+    public  String lastDirection = "";
+    public  final Keyset keyset; // Keysetインスタンスを保持
 
     public Timers(JTextArea timerTextArea, Keyset keyset) {
         this.timerTextArea = timerTextArea;
@@ -24,7 +24,7 @@ public class Timers extends Keyset {
         swingTimer.start();
     }
 
-    private void updateCounters() {
+    public  void updateCounters() {
         // 最後のカウンターを更新
         int lastIndex = flam.size() - 1;
         String newcomen = keyset.getDirection(); // Keysetから方向を取得

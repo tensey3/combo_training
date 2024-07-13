@@ -47,7 +47,7 @@ public class Keyset extends JPanel implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         updateKeyState(e, true);
-    }
+    }//キーが離された時
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -79,9 +79,8 @@ public class Keyset extends JPanel implements KeyListener {
         }
     }
 
-    private void updateDirection() {
+    public  void updateDirection() {
         String newcomen = getDirection();
-
         if (!newcomen.isEmpty() && !newcomen.equals(lastDirection)) {
             ImageIcon icon = getDirectionIcon(newcomen);
             JLabel newDirectionLabel = new JLabel(icon); // 新しい方向のラベルを作成
@@ -115,7 +114,7 @@ public class Keyset extends JPanel implements KeyListener {
         return "";
     }
 
-    private ImageIcon getDirectionIcon(String direction) {
+    public  ImageIcon getDirectionIcon(String direction) {
         String imageName = switch (direction) {
             case "↖️" -> "images/up_left.png";
             case "↗︎" -> "images/up_right.png";
