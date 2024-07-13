@@ -49,7 +49,7 @@ public class Flam extends JFrame {
             setUndecorated(true); // ウィンドウの装飾を無効にする
             gd.setFullScreenWindow(this); // フルスクリーンモードに設定する
         } else {
-            System.err.println("フルスクリーンモードはサポートされていません");
+            System.err.println("ざぁこざぁこ❤️");
             setSize(1300, 1200); // フォールバックとしてサイズを設定
             setVisible(true);
         }
