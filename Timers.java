@@ -49,7 +49,7 @@ public class Timers extends Keyset {
 
         // カウンターを新しく作る
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < flam.size(); i++) {
+        for (int i = flam.size() - 1; i >= 0; i--) { // リストの後ろから処理する
             sb.append(flam.get(i)).append(" ").append(directions.get(i)).append("\n");
         }
         timerTextArea.setText(sb.toString());
