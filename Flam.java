@@ -25,7 +25,7 @@ public class Flam extends JFrame {
         timerTextArea.setFont(new Font("SansSerif", Font.PLAIN, 24));
         mainPanel.add(timerTextArea, BorderLayout.CENTER); // タイマー表示用のエリアを中央に追加
 
-        new Timer(timerTextArea); // なぜか警告出るけど動いてるからええか
+        new Timers(timerTextArea); // なぜか警告出るけど動いてるからええか
 
         add(mainPanel, BorderLayout.CENTER); // メインパネルをフレームに追加
 

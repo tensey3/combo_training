@@ -79,7 +79,7 @@ public class Keyset extends JPanel implements KeyListener {
         }
     }
 
-    private void updateDirection() {
+    public void updateDirection() {
         String newcomen = getDirection();
 
         if (!newcomen.isEmpty() && !newcomen.equals(lastDirection)) {
@@ -95,7 +95,7 @@ public class Keyset extends JPanel implements KeyListener {
         }
     }
 
-    private String getDirection() {
+    protected String getDirection() {
         if ((isWKeyPressed || isSpaceKeyPressed) && isAKeyPressed) {
             return "↖️";
         } else if ((isWKeyPressed || isSpaceKeyPressed) && isDKeyPressed) {
