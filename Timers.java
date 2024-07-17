@@ -32,7 +32,7 @@ public class Timers extends Keyset {
         // キーイベントを受け取ったらその時点のカウント数でストップ
         if (!newcomen.isEmpty() && !newcomen.equals(lastDirection)) {
             lastDirection = newcomen; // 新しい方向を更新
-            flam.set(lastIndex, flam.get(lastIndex)); // 最後のカウンターを現在の値で固定する
+            flam.set(lastIndex, flam.get(lastIndex)); // 最後のカウンターを現在の値で固定するANTHROPIC_API_KEY=YOUR_API_KEY
             directions.set(lastIndex, newcomen); // 最後の方向を現在の値で固定する
             flam.add(0); // 新しいカウンターを0で開始
             directions.add(""); // 新しい方向を追加
