@@ -3,7 +3,7 @@ import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-public class Timers extends Keyset {
+public class Timers {
     public final JTextArea timerTextArea;
     public final List<Integer> flam;
     public  final List<String> directions;
