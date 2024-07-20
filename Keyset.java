@@ -148,6 +148,12 @@ public class Keyset extends JPanel implements KeyListener {
             case "↓" -> "images/down.png";
             case "←" -> "images/left.png";
             case "→" -> "images/right.png";
+            case "弱K" -> "images/JK.png";
+            case "中K" -> "images/TK.png";
+            case "強K" -> "images/KK.png";
+            case "弱P" -> "images/JP.png";
+            case "中P" -> "images/TP.png";
+            case "強P" -> "images/JKP.png";
             default -> null;
         };
         if (imageName == null) return null;
