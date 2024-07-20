@@ -18,6 +18,12 @@ public class Keyset extends JPanel implements KeyListener {
     private boolean isSKeyPressed = false;
     private boolean isDKeyPressed = false;
     private boolean isSpaceKeyPressed = false;
+    private boolean isJKeyPressed = false;
+    private boolean isKKeyPressed = false;
+    private boolean isLKeyPressed = false;
+    private boolean isUKeyPressed = false;
+    private boolean isIKeyPressed = false;
+    private boolean isOKeyPressed = false;
     private String lastDirection = "";
     public final Timer timer;
     private boolean isUpdatePending = false;
@@ -62,6 +68,12 @@ public class Keyset extends JPanel implements KeyListener {
             case KeyEvent.VK_S -> isSKeyPressed = isPressed;
             case KeyEvent.VK_D -> isDKeyPressed = isPressed;
             case KeyEvent.VK_SPACE -> isSpaceKeyPressed = isPressed;
+            case KeyEvent.VK_J -> isJKeyPressed = isPressed;
+            case KeyEvent.VK_K -> isKKeyPressed = isPressed;
+            case KeyEvent.VK_L -> isLKeyPressed = isPressed;
+            case KeyEvent.VK_U -> isUKeyPressed = isPressed;
+            case KeyEvent.VK_I -> isIKeyPressed = isPressed;
+            case KeyEvent.VK_O -> isOKeyPressed = isPressed;
         }
         scheduleUpdate();
     }
@@ -110,6 +122,18 @@ public class Keyset extends JPanel implements KeyListener {
             return "←";
         } else if (isDKeyPressed) {
             return "→";
+        }else if (isJKeyPressed) {
+            return "弱K";
+        }else if (isKKeyPressed) {
+            return "中K";
+        }else if (isLKeyPressed) {
+            return "強K";
+        }else if (isUKeyPressed) {
+            return "弱P";
+        }else if (isIKeyPressed) {
+            return "中P";
+        }else if (isOKeyPressed) {
+            return "強P";
         }
         return "";
     }
