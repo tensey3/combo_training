@@ -19,7 +19,7 @@ public class Keyset extends JPanel implements KeyListener {
     private boolean isDKeyPressed = false;
     private boolean isSpaceKeyPressed = false;
     private String lastDirection = "";
-    private final Timer timer;
+    public final Timer timer;
     private boolean isUpdatePending = false;
     private final int imageSize;
 
