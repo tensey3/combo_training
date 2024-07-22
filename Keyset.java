@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
+//ここは触んない
 public class Keyset extends JPanel implements KeyListener {
     private final JPanel directionPanel;
     private final JLabel currentDirectionLabel;
