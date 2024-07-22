@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-public class KeySet extends JPanel implements KeyListener {
+public class Keyset extends JPanel implements KeyListener {
     private final JPanel directionPanel;
     private final JLabel currentDirectionLabel;
     private boolean aPressed = false;
@@ -30,7 +30,7 @@ public class KeySet extends JPanel implements KeyListener {
     private boolean updatePending = false;
     private final int imageSize;
 
-    public KeySet() {
+    public Keyset() {
         setLayout(new BorderLayout());
 
         directionPanel = new JPanel();
