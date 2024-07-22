@@ -141,7 +141,7 @@ public class Keyset extends JPanel implements KeyListener {
         return "";
     }
 
-    public ImageIcon getDirectionIcon(String direction) {
+    private  ImageIcon getDirectionIcon(String direction) {
         String imageName = switch (direction) {
             case "↖️" -> "images/up_left.png";
             case "↗︎" -> "images/up_right.png";
