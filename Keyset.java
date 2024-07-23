@@ -160,7 +160,7 @@ public class Keyset extends JPanel implements KeyListener {
         }
         return directionBuilder.toString();
     }
-//画像パスを取得するメソッド
+//画像パスを取得するメソッドです
     private ImageIcon getDirectionIcon(String direction) {
         String imageName = switch (direction) {
             case "↖️" -> "images/up_left.png";
