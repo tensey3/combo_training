@@ -5,14 +5,14 @@ import java.util.Map;
 
 public class Combo {
     private final LinkedList<Integer> keySequence;
-    private final int sequenceSize;
+    private final int inputCount;
     private ComboListener listener;
     private final Map<String, int[]> commandMap;
 
     public Combo() {
         keySequence = new LinkedList<>();
-        sequenceSize = 4; // シーケンス長は4
         commandMap = initializeCommands();
+        inputCount = calculateMaxSequenceLength(); // 最大シーケンス長を動的に設定
     }
 
     public void setComboListener(ComboListener listener) {
@@ -20,7 +20,7 @@ public class Combo {
     }
 
     public void addKey(int keyCode) {
-        if (keySequence.size() >= sequenceSize) {
+        if (keySequence.size() >= inputCount) {
             keySequence.removeFirst(); // 最も古いキーを削除
         }
         keySequence.add(keyCode);
@@ -44,6 +44,7 @@ public class Combo {
             return false;
         }
 
+        // キーシーケンスが正しい順序で入力されているか確認
         for (int i = 0; i < commandSequence.length; i++) {
             if (keySequence.get(keySequence.size() - commandSequence.length + i) != commandSequence[i]) {
                 return false;
@@ -67,7 +68,18 @@ public class Combo {
             KeyEvent.VK_D,   // ↘︎ (下右方向)
             KeyEvent.VK_O    // P
         });
+        // ここで追加のコマンドを定義可能
         return map;
+    }
+
+    private int calculateMaxSequenceLength() {
+        int maxLength = 0;
+        for (int[] sequence : commandMap.values()) {
+            if (sequence.length > maxLength) {
+                maxLength = sequence.length;
+            }
+        }
+        return maxLength;
     }
 
     public interface ComboListener {
