@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 public class Flam extends JFrame implements Combo.ComboListener {
     public Timers timers; // Timersインスタンスをフィールドとして保持
     private final JTextArea comboTextArea; // コンボ表示用のテキストエリア
+    private final Combo combo; // Comboインスタンスをフィールドとして保持
 
     public Flam() {
         setTitle("Key Event Demo");
@@ -21,8 +22,7 @@ public class Flam extends JFrame implements Combo.ComboListener {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        Combo combo = new Combo();
-        //combo.setComboListener(this); // リスナーを設定
+        combo = new Combo();
 
         Keyset keyset = new Keyset(combo); // Keysetクラスのインスタンスを生成
         mainPanel.add(keyset, BorderLayout.WEST); // Keysetクラスのインスタンスを左側に追加
@@ -50,6 +50,14 @@ public class Flam extends JFrame implements Combo.ComboListener {
             switchToFullScreen();
             setVisible(true);
         });
+
+        // コンストラクタの外でリスナーを設定
+        initializeComboListener();
+    }
+
+    // コンボリスナーを初期化するメソッド
+    private void initializeComboListener() {
+        combo.setComboListener(this);
     }
 
     // 画面作る処理
