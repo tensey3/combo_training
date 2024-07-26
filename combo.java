@@ -1,14 +1,18 @@
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class Combo {
     private final LinkedList<Integer> keySequence;
     private final int sequenceSize;
     private ComboListener listener;
+    private final Map<String, int[]> commandMap;
 
     public Combo() {
         keySequence = new LinkedList<>();
         sequenceSize = 4; // シーケンス長は4
+        commandMap = initializeCommands();
     }
 
     public void setComboListener(ComboListener listener) {
@@ -21,40 +25,21 @@ public class Combo {
         }
         keySequence.add(keyCode);
 
-        // コマンドの検出
-        if (detectCommand("波動拳")) {
-            if (listener != null) {
-                listener.onComboDetected("波動拳");
-            }
-        } else if (detectCommand("昇龍拳")) {
-            if (listener != null) {
-                listener.onComboDetected("昇龍拳");
+        detectAndNotify();
+    }
+
+    private void detectAndNotify() {
+        for (Map.Entry<String, int[]> entry : commandMap.entrySet()) {
+            if (detectCommand(entry.getValue())) {
+                if (listener != null) {
+                    listener.onComboDetected(entry.getKey());
+                }
+                return;
             }
         }
     }
 
-    private boolean detectCommand(String command) {
-        int[] commandSequence;
-        switch (command) {
-            case "波動拳" -> // 波動拳のシーケンス: ↓, ↘︎, →, P
-                commandSequence = new int[]{
-                    KeyEvent.VK_S,   // ↓
-                    KeyEvent.VK_D,   // ↘︎ (下右方向)
-                    KeyEvent.VK_D,   // →
-                    KeyEvent.VK_O    // P
-                };
-            case "昇龍拳" -> // 昇龍拳のシーケンス: →, ↓, ↘︎, P
-                commandSequence = new int[]{
-                    KeyEvent.VK_D,   // →
-                    KeyEvent.VK_S,   // ↓
-                    KeyEvent.VK_D,   // ↘︎ (下右方向)
-                    KeyEvent.VK_O    // P
-                };
-            default -> {
-                return false;
-            }
-        }
-
+    private boolean detectCommand(int[] commandSequence) {
         if (keySequence.size() < commandSequence.length) {
             return false;
         }
@@ -66,6 +51,23 @@ public class Combo {
         }
 
         return true;
+    }
+
+    private Map<String, int[]> initializeCommands() {
+        Map<String, int[]> map = new HashMap<>();
+        map.put("波動拳", new int[]{
+            KeyEvent.VK_S,   // ↓
+            KeyEvent.VK_D,   // ↘︎ (下右方向)
+            KeyEvent.VK_D,   // →
+            KeyEvent.VK_O    // P
+        });
+        map.put("昇龍拳", new int[]{
+            KeyEvent.VK_D,   // →
+            KeyEvent.VK_S,   // ↓
+            KeyEvent.VK_D,   // ↘︎ (下右方向)
+            KeyEvent.VK_O    // P
+        });
+        return map;
     }
 
     public interface ComboListener {
