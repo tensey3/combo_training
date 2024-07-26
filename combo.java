@@ -36,26 +36,23 @@ public class Combo {
     private boolean detectCommand(String command) {
         int[] commandSequence;
         switch (command) {
-            case "波動拳":
-                // 波動拳のシーケンス: ↓, ↘︎, →, P
+            case "波動拳" -> // 波動拳のシーケンス: ↓, ↘︎, →, P
                 commandSequence = new int[]{
                     KeyEvent.VK_S,   // ↓
                     KeyEvent.VK_D,   // ↘︎ (下右方向)
                     KeyEvent.VK_D,   // →
                     KeyEvent.VK_O    // P
                 };
-                break;
-            case "昇龍拳":
-                // 昇龍拳のシーケンス: →, ↓, ↘︎, P
+            case "昇龍拳" -> // 昇龍拳のシーケンス: →, ↓, ↘︎, P
                 commandSequence = new int[]{
                     KeyEvent.VK_D,   // →
                     KeyEvent.VK_S,   // ↓
                     KeyEvent.VK_D,   // ↘︎ (下右方向)
                     KeyEvent.VK_O    // P
                 };
-                break;
-            default:
+            default -> {
                 return false;
+            }
         }
 
         if (keySequence.size() < commandSequence.length) {
