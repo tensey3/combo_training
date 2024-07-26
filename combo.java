@@ -36,40 +36,34 @@ public class Combo {
     private boolean detectCommand(String command) {
         int[] commandSequence;
         switch (command) {
-            case "波動拳" -> // 波動拳のシーケンス: ↓, ↘︎, →, P
+            case "波動拳":
+                // 波動拳のシーケンス: ↓, ↘︎, →, P
                 commandSequence = new int[]{
                     KeyEvent.VK_S,   // ↓
-                    KeyEvent.VK_S, KeyEvent.VK_D,   // ↘︎ (例として同時押しを↘︎と見なす)
+                    KeyEvent.VK_D,   // ↘︎ (下右方向)
                     KeyEvent.VK_D,   // →
                     KeyEvent.VK_O    // P
                 };
-            case "昇龍拳" -> // 昇龍拳のシーケンス: →, ↓, ↘︎, P
+                break;
+            case "昇龍拳":
+                // 昇龍拳のシーケンス: →, ↓, ↘︎, P
                 commandSequence = new int[]{
                     KeyEvent.VK_D,   // →
                     KeyEvent.VK_S,   // ↓
-                    KeyEvent.VK_S, KeyEvent.VK_D,   // ↘︎
+                    KeyEvent.VK_D,   // ↘︎ (下右方向)
                     KeyEvent.VK_O    // P
                 };
-            default -> {
+                break;
+            default:
                 return false;
-            }
         }
 
         if (keySequence.size() < commandSequence.length) {
             return false;
         }
 
-        // ↘︎を↓と→の同時押しとして簡単に表現
-        LinkedList<Integer> transformedSequence = new LinkedList<>(keySequence);
-        for (int i = 0; i < transformedSequence.size() - 1; i++) {
-            if (transformedSequence.get(i) == KeyEvent.VK_S && transformedSequence.get(i + 1) == KeyEvent.VK_D) {
-                transformedSequence.set(i, KeyEvent.VK_S | KeyEvent.VK_D); // ↘︎と見なす
-                transformedSequence.remove(i + 1);
-            }
-        }
-
         for (int i = 0; i < commandSequence.length; i++) {
-            if (transformedSequence.get(transformedSequence.size() - commandSequence.length + i) != commandSequence[i]) {
+            if (keySequence.get(keySequence.size() - commandSequence.length + i) != commandSequence[i]) {
                 return false;
             }
         }
