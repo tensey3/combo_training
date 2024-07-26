@@ -22,7 +22,7 @@ public class Flam extends JFrame implements Combo.ComboListener {
         mainPanel.setLayout(new BorderLayout());
 
         Combo combo = new Combo();
-        combo.setComboListener(this); // リスナーを設定
+        //combo.setComboListener(this); // リスナーを設定
 
         Keyset keyset = new Keyset(combo); // Keysetクラスのインスタンスを生成
         mainPanel.add(keyset, BorderLayout.WEST); // Keysetクラスのインスタンスを左側に追加
