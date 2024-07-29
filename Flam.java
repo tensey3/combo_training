@@ -8,11 +8,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Flam extends JFrame implements Combo.ComboListener {
     public Timers timers; // Timersインスタンスをフィールドとして保持
     private final JTextArea comboTextArea; // コンボ表示用のテキストエリア
     private final Combo combo; // Comboインスタンスをフィールドとして保持
+    private Timer clearTimer; // コンボテキストエリアをクリアするためのタイマー
 
     public Flam() {
         setTitle("Key Event Demo");
@@ -23,6 +27,7 @@ public class Flam extends JFrame implements Combo.ComboListener {
         mainPanel.setLayout(new BorderLayout());
 
         combo = new Combo();
+        combo.setComboListener(this); // リスナーの設定を確実に行う
 
         Keyset keyset = new Keyset(combo); // Keysetクラスのインスタンスを生成
         mainPanel.add(keyset, BorderLayout.WEST); // Keysetクラスのインスタンスを左側に追加
@@ -67,7 +72,7 @@ public class Flam extends JFrame implements Combo.ComboListener {
             setUndecorated(true); // ウィンドウの装飾を無効にする
             gd.setFullScreenWindow(this); // フルスクリーンモードに設定する
         } else {
-            System.err.println("ざぁこざぁこ❤️");
+            System.err.println("フルスクリーンモードはサポートされていません。");
             setSize(1300, 1200); // フォールバックとしてサイズを設定
             setVisible(true);
         }
@@ -83,7 +88,25 @@ public class Flam extends JFrame implements Combo.ComboListener {
 
     @Override
     public void onComboDetected(String combo) {
-        // GUIに波動拳を表示するための処理
-        SwingUtilities.invokeLater(() -> comboTextArea.setText(combo));
+        System.out.println("Combo detected: " + combo); // デバッグ出力を追加
+        SwingUtilities.invokeLater(() -> {
+            comboTextArea.setText(combo);
+            startClearTimer(); // コンボ表示をクリアするタイマーを開始
+        });
+    }
+
+    // コンボテキストエリアを一定時間後にクリアするためのメソッド
+    private void startClearTimer() {
+        if (clearTimer != null) {
+            clearTimer.stop(); // 既存のタイマーがある場合は停止
+        }
+        clearTimer = new Timer(2000, new ActionListener() { // 2秒後にクリア
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                comboTextArea.setText(""); // コンボ表示をクリア
+            }
+        });
+        clearTimer.setRepeats(false); // タイマーを一度だけ実行するように設定
+        clearTimer.start();
     }
 }
