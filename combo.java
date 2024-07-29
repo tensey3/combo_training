@@ -4,10 +4,11 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Combo {
-    private final LinkedList<Integer> keySequence;
+    private final LinkedList<KeyPress> keySequence;
     private final int inputCount;
     private ComboListener listener;
     private final Map<String, int[][]> commandMap;
+    private static final int TIME_THRESHOLD = 200; // 200ミリ秒以内の入力を許容
 
     public Combo() {
         keySequence = new LinkedList<>();
@@ -20,7 +21,8 @@ public class Combo {
     }
 
     public void addKey(int keyCode) {
-        keySequence.add(keyCode);
+        long currentTime = System.currentTimeMillis();
+        keySequence.add(new KeyPress(keyCode, currentTime));
 
         if (keySequence.size() > inputCount) {
             keySequence.removeFirst();
@@ -33,14 +35,21 @@ public class Combo {
     }
 
     private void detectAndNotify() {
-        for (Map.Entry<String, int[][]> entry : commandMap.entrySet()) {
-            if (detectCommand(entry.getValue())) {
-                if (listener != null) {
-                    listener.onComboDetected(entry.getKey());
-                }
-                clearCommandSequence(entry.getValue()[0].length);
-                return;
+        // 昇竜拳を優先的にチェック
+        if (detectCommand(commandMap.get("昇龍拳"))) {
+            if (listener != null) {
+                listener.onComboDetected("昇龍拳");
             }
+            clearCommandSequence(commandMap.get("昇龍拳")[0].length);
+            return;
+        }
+
+        // 波動拳をチェック
+        if (detectCommand(commandMap.get("波動拳"))) {
+            if (listener != null) {
+                listener.onComboDetected("波動拳");
+            }
+            clearCommandSequence(commandMap.get("波動拳")[0].length);
         }
     }
 
@@ -50,19 +59,35 @@ public class Combo {
         }
 
         for (int[] commandSequence : commandSequences) {
-            boolean match = true;
-            for (int i = 0; i < commandSequence.length; i++) {
-                if (keySequence.get(keySequence.size() - commandSequence.length + i) != commandSequence[i]) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) {
+            if (detectWithTimeThreshold(commandSequence)) {
                 System.out.println("Command detected: " + commandSequenceToString(commandSequence));
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean detectWithTimeThreshold(int[] commandSequence) {
+        int matchCount = 0;
+        long previousTime = 0;
+
+        for (int i = 0; i < commandSequence.length; i++) {
+            KeyPress keyPress = keySequence.get(keySequence.size() - commandSequence.length + i);
+
+            if (keyPress.keyCode == commandSequence[i] || 
+                (i == 1 && commandSequence[i] == (KeyEvent.VK_S | KeyEvent.VK_D) && keyPress.keyCode == KeyEvent.VK_D && 
+                 keySequence.get(keySequence.size() - commandSequence.length + i - 1).keyCode == KeyEvent.VK_S)) {
+                if (previousTime == 0 || (keyPress.time - previousTime <= TIME_THRESHOLD)) {
+                    matchCount++;
+                    previousTime = keyPress.time;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return matchCount == commandSequence.length;
     }
 
     private void clearCommandSequence(int length) {
@@ -84,15 +109,15 @@ public class Combo {
 
     private Map<String, int[][]> initializeCommands() {
         Map<String, int[][]> map = new HashMap<>();
-        map.put("波動拳", new int[][]{
-            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_O},    // ↓ ↘︎ → 強P
-            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_U},    // ↓ ↘︎ → 弱P
-            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_I}     // ↓ ↘︎ → 中P
-        });
         map.put("昇龍拳", new int[][]{
             {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_O},    // → ↓ ↘︎ 強P
             {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_U},    // → ↓ ↘︎ 弱P
             {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_I}     // → ↓ ↘︎ 中P
+        });
+        map.put("波動拳", new int[][]{
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_O},    // ↓ ↘︎ → 強P
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_U},    // ↓ ↘︎ → 弱P
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_I}     // ↓ ↘︎ → 中P
         });
         return map;
     }
@@ -111,5 +136,20 @@ public class Combo {
 
     public interface ComboListener {
         void onComboDetected(String combo);
+    }
+
+    private static class KeyPress {
+        final int keyCode;
+        final long time;
+
+        KeyPress(int keyCode, long time) {
+            this.keyCode = keyCode;
+            this.time = time;
+        }
+
+        @Override
+        public String toString() {
+            return KeyEvent.getKeyText(keyCode) + "@" + time;
+        }
     }
 }
