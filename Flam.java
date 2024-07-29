@@ -12,7 +12,7 @@ import javax.swing.Timer;
 
 public class Flam extends JFrame implements Combo.ComboListener {
     public Timers timers;
-    private final JTextArea comboTextArea;
+    private final JTextArea comboArea;
     private Combo combo;
     private Timer clearTimer;
 
@@ -23,15 +23,15 @@ public class Flam extends JFrame implements Combo.ComboListener {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        JTextArea timerTextArea = new JTextArea();
-        timerTextArea.setEditable(false);
-        timerTextArea.setFont(new Font("SansSerif", Font.PLAIN, 24));
-        mainPanel.add(timerTextArea, BorderLayout.CENTER);
+        JTextArea timerArea = new JTextArea();
+        timerArea.setEditable(false);
+        timerArea.setFont(new Font("SansSerif", Font.PLAIN, 24));
+        mainPanel.add(timerArea, BorderLayout.CENTER);
 
-        comboTextArea = new JTextArea();
-        comboTextArea.setEditable(false);
-        comboTextArea.setFont(new Font("SansSerif", Font.BOLD, 36));
-        mainPanel.add(comboTextArea, BorderLayout.EAST);
+        comboArea = new JTextArea();
+        comboArea.setEditable(false);
+        comboArea.setFont(new Font("SansSerif", Font.BOLD, 36));
+        mainPanel.add(comboArea, BorderLayout.EAST);
 
         add(mainPanel, BorderLayout.CENTER);
         setFocusable(true);
@@ -42,13 +42,13 @@ public class Flam extends JFrame implements Combo.ComboListener {
             requestFocusInWindow();
         });
 
-        initializeCombo();
+        initCombo();
 
         Keyset keyset = new Keyset(combo);
         mainPanel.add(keyset, BorderLayout.WEST);
         addKeyListener(keyset);
 
-        timers = new Timers(timerTextArea, keyset);
+        timers = new Timers(timerArea, keyset);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -61,9 +61,9 @@ public class Flam extends JFrame implements Combo.ComboListener {
         });
     }
 
-    private void initializeCombo() {
+    private void initCombo() {
         combo = new Combo();
-        combo.setComboListener(this);
+        combo.setListener(this);
     }
 
     private void switchToFullScreen() {
@@ -82,7 +82,7 @@ public class Flam extends JFrame implements Combo.ComboListener {
     public void onComboDetected(String combo) {
         System.out.println("Combo detected: " + combo);
         SwingUtilities.invokeLater(() -> {
-            comboTextArea.setText(combo);
+            comboArea.setText(combo);
             startClearTimer();
         });
     }
@@ -91,7 +91,7 @@ public class Flam extends JFrame implements Combo.ComboListener {
         if (clearTimer != null && clearTimer.isRunning()) {
             clearTimer.stop();
         }
-        clearTimer = new Timer(2000, e -> comboTextArea.setText(""));
+        clearTimer = new Timer(2000, e -> comboArea.setText(""));
         clearTimer.setRepeats(false);
         clearTimer.start();
     }

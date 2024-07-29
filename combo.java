@@ -4,82 +4,80 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Combo {
-    private final LinkedList<KeyPress> keySequence;
-    private final int inputCount;
+    private final LinkedList<KeyPress> keys;
+    private final int maxInputCount;
     private ComboListener listener;
-    private final Map<String, int[][]> commandMap;
-    private static final int TIME_THRESHOLD = 200; // 200ミリ秒以内の入力を許容
+    private final Map<String, int[][]> commands;
+    private static final int TIME_LIMIT = 200; // 200ミリ秒以内の入力を許容
 
     public Combo() {
-        keySequence = new LinkedList<>();
-        commandMap = initializeCommands();
-        inputCount = calculateMaxSequenceLength();
+        keys = new LinkedList<>();
+        commands = initCommands();
+        maxInputCount = getMaxSeqLength();
     }
 
-    public void setComboListener(ComboListener listener) {
+    public void setListener(ComboListener listener) {
         this.listener = listener;
     }
 
     public void addKey(int keyCode) {
         long currentTime = System.currentTimeMillis();
-        keySequence.add(new KeyPress(keyCode, currentTime));
+        keys.add(new KeyPress(keyCode, currentTime));
 
-        if (keySequence.size() > inputCount) {
-            keySequence.removeFirst();
+        if (keys.size() > maxInputCount) {
+            keys.removeFirst();
         }
 
         System.out.println("Key added: " + KeyEvent.getKeyText(keyCode));
-        System.out.println("Current sequence: " + keySequence);
+        System.out.println("Current sequence: " + keys);
 
-        detectAndNotify();
+        checkCommands();
     }
 
-    private void detectAndNotify() {
-        // 昇竜拳を優先的にチェック
-        if (detectCommand(commandMap.get("昇龍拳"))) {
+    private void checkCommands() {
+        if (checkCommand(commands.get("昇龍拳"))) {
             if (listener != null) {
                 listener.onComboDetected("昇龍拳");
             }
-            clearCommandSequence(commandMap.get("昇龍拳")[0].length);
+            clearSeq(commands.get("昇龍拳")[0].length);
             return;
         }
 
-        // 波動拳をチェック
-        if (detectCommand(commandMap.get("波動拳"))) {
+        if (checkCommand(commands.get("波動拳"))) {
             if (listener != null) {
                 listener.onComboDetected("波動拳");
             }
-            clearCommandSequence(commandMap.get("波動拳")[0].length);
+            clearSeq(commands.get("波動拳")[0].length);
         }
     }
 
-    private boolean detectCommand(int[][] commandSequences) {
-        if (keySequence.size() < commandSequences[0].length) {
+    private boolean checkCommand(int[][] sequences) {
+        if (keys.size() < sequences[0].length) {
             return false;
         }
 
-        for (int[] commandSequence : commandSequences) {
-            if (detectWithTimeThreshold(commandSequence)) {
-                System.out.println("Command detected: " + commandSequenceToString(commandSequence));
+        for (int[] sequence : sequences) {
+            if (checkWithTimeLimit(sequence)) {
+                System.out.println("Command detected: " + seqToString(sequence));
                 return true;
             }
         }
         return false;
     }
 
-    private boolean detectWithTimeThreshold(int[] commandSequence) {
+    private boolean checkWithTimeLimit(int[] sequence) {
         int matchCount = 0;
-        long previousTime = 0;
+        long prevTime = 0;
 
-        for (int i = 0; i < commandSequence.length; i++) {
-            KeyPress keyPress = keySequence.get(keySequence.size() - commandSequence.length + i);
+        for (int i = 0; i < sequence.length; i++) {
+            KeyPress keyPress = keys.get(keys.size() - sequence.length + i);
 
-            if (keyPress.keyCode == commandSequence[i] || 
-                (i == 1 && commandSequence[i] == (KeyEvent.VK_S | KeyEvent.VK_D) && keyPress.keyCode == KeyEvent.VK_D && 
-                 keySequence.get(keySequence.size() - commandSequence.length + i - 1).keyCode == KeyEvent.VK_S)) {
-                if (previousTime == 0 || (keyPress.time - previousTime <= TIME_THRESHOLD)) {
+            if (keyPress.keyCode == sequence[i] || 
+                (i == 1 && sequence[i] == (KeyEvent.VK_S | KeyEvent.VK_D) && keyPress.keyCode == KeyEvent.VK_D && 
+                 keys.get(keys.size() - sequence.length + i - 1).keyCode == KeyEvent.VK_S)) {
+                if (prevTime == 0 || (keyPress.time - prevTime <= TIME_LIMIT)) {
                     matchCount++;
-                    previousTime = keyPress.time;
+                    prevTime = keyPress.time;
                 } else {
                     return false;
                 }
@@ -87,27 +85,27 @@ public class Combo {
                 return false;
             }
         }
-        return matchCount == commandSequence.length;
+        return matchCount == sequence.length;
     }
 
-    private void clearCommandSequence(int length) {
+    private void clearSeq(int length) {
         for (int i = 0; i < length; i++) {
-            if (!keySequence.isEmpty()) {
-                keySequence.removeFirst();
+            if (!keys.isEmpty()) {
+                keys.removeFirst();
             }
         }
         System.out.println("Sequence cleared");
     }
 
-    private String commandSequenceToString(int[] commandSequence) {
+    private String seqToString(int[] sequence) {
         StringBuilder sb = new StringBuilder();
-        for (int key : commandSequence) {
+        for (int key : sequence) {
             sb.append(KeyEvent.getKeyText(key)).append(" ");
         }
         return sb.toString().trim();
     }
 
-    private Map<String, int[][]> initializeCommands() {
+    private Map<String, int[][]> initCommands() {
         Map<String, int[][]> map = new HashMap<>();
         map.put("昇龍拳", new int[][]{
             {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_O},    // → ↓ ↘︎ 強P
@@ -122,9 +120,9 @@ public class Combo {
         return map;
     }
 
-    private int calculateMaxSequenceLength() {
+    private int getMaxSeqLength() {
         int maxLength = 0;
-        for (int[][] sequences : commandMap.values()) {
+        for (int[][] sequences : commands.values()) {
             for (int[] sequence : sequences) {
                 if (sequence.length > maxLength) {
                     maxLength = sequence.length;
