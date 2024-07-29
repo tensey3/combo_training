@@ -11,95 +11,88 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class Flam extends JFrame implements Combo.ComboListener {
-    public Timers timers; // Timersインスタンスをフィールドとして保持
-    private final JTextArea comboTextArea; // コンボ表示用のテキストエリア
-    private final Combo combo; // Comboインスタンスをフィールドとして保持
-    private Timer clearTimer; // コンボテキストエリアをクリアするためのタイマー
+    public Timers timers;
+    private final JTextArea comboTextArea;
+    private Combo combo;
+    private Timer clearTimer;
 
     public Flam() {
         setTitle("Key Event Demo");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // メインパネルを作成してBorderLayoutで配置
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-
-        combo = new Combo();
-        combo.setComboListener(this); // リスナーの設定を確実に行う
-
-        Keyset keyset = new Keyset(combo); // Keysetクラスのインスタンスを生成
-        mainPanel.add(keyset, BorderLayout.WEST); // Keysetクラスのインスタンスを左側に追加
 
         JTextArea timerTextArea = new JTextArea();
         timerTextArea.setEditable(false);
         timerTextArea.setFont(new Font("SansSerif", Font.PLAIN, 24));
-        mainPanel.add(timerTextArea, BorderLayout.CENTER); // タイマー表示用のエリアを中央に追加
+        mainPanel.add(timerTextArea, BorderLayout.CENTER);
 
         comboTextArea = new JTextArea();
         comboTextArea.setEditable(false);
         comboTextArea.setFont(new Font("SansSerif", Font.BOLD, 36));
-        mainPanel.add(comboTextArea, BorderLayout.EAST); // コンボ表示用のエリアを右側に追加
+        mainPanel.add(comboTextArea, BorderLayout.EAST);
 
-        timers = new Timers(timerTextArea, keyset); // Timersクラスのインスタンスを生成し、Keysetインスタンスを渡す
-
-        add(mainPanel, BorderLayout.CENTER); // メインパネルをフレームに追加
-
-        addKeyListener(keyset); // KeysetをKeyListenerとして追加
+        add(mainPanel, BorderLayout.CENTER);
         setFocusable(true);
-        requestFocusInWindow();
 
-        // フレームを表示する準備が整ったらフルスクリーンモードに切り替える
         SwingUtilities.invokeLater(() -> {
             switchToFullScreen();
             setVisible(true);
+            requestFocusInWindow();
         });
 
-        // コンストラクタの外でリスナーを設定
-        initializeComboListener();
-    }
+        initializeCombo();
 
-    // コンボリスナーを初期化するメソッド
-    private void initializeComboListener() {
-        combo.setComboListener(this);
-    }
+        Keyset keyset = new Keyset(combo);
+        mainPanel.add(keyset, BorderLayout.WEST);
+        addKeyListener(keyset);
 
-    // 画面作る処理
-    private void switchToFullScreen() {
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        if (gd.isFullScreenSupported()) {
-            setUndecorated(true); // ウィンドウの装飾を無効にする
-            gd.setFullScreenWindow(this); // フルスクリーンモードに設定する
-        } else {
-            System.err.println("フルスクリーンモードはサポートされていません。");
-            setSize(1300, 1200); // フォールバックとしてサイズを設定
-            setVisible(true);
-        }
+        timers = new Timers(timerTextArea, keyset);
 
-        // プログラム終了時にフルスクリーンモードを解除する処理を追加
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                gd.setFullScreenWindow(null); // フルスクリーンモードを解除する
+                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+                if (gd.getFullScreenWindow() == Flam.this) {
+                    gd.setFullScreenWindow(null);
+                }
             }
         });
     }
 
+    private void initializeCombo() {
+        combo = new Combo();
+        combo.setComboListener(this);
+    }
+
+    private void switchToFullScreen() {
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        if (gd.isFullScreenSupported()) {
+            setUndecorated(true);
+            gd.setFullScreenWindow(this);
+        } else {
+            System.err.println("フルスクリーンモードはサポートされていません。");
+            setSize(1300, 1200);
+            setVisible(true);
+        }
+    }
+
     @Override
     public void onComboDetected(String combo) {
-        System.out.println("Combo detected: " + combo); // デバッグ出力を追加
+        System.out.println("Combo detected: " + combo);
         SwingUtilities.invokeLater(() -> {
             comboTextArea.setText(combo);
-            startClearTimer(); // コンボ表示をクリアするタイマーを開始
+            startClearTimer();
         });
     }
 
-    // コンボテキストエリアを一定時間後にクリアするためのメソッド
     private void startClearTimer() {
-        if (clearTimer != null) {
-            clearTimer.stop(); // 既存のタイマーがある場合は停止
+        if (clearTimer != null && clearTimer.isRunning()) {
+            clearTimer.stop();
         }
-        clearTimer = new Timer(2000, e -> comboTextArea.setText("")); // ラムダ式に変更
-        clearTimer.setRepeats(false); // タイマーを一度だけ実行するように設定
+        clearTimer = new Timer(2000, e -> comboTextArea.setText(""));
+        clearTimer.setRepeats(false);
         clearTimer.start();
     }
 }

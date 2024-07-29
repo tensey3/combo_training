@@ -7,7 +7,7 @@ public class Main {
                 Flam frame = new Flam();
                 frame.setVisible(true);
             } catch (Exception e) {
-                // e.printStackTrace(); // 例外が発生した場合にスタックトレースを出力
+                e.printStackTrace(); // 例外が発生した場合にスタックトレースを出力
             }
         });
     }
