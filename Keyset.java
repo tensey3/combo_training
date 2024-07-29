@@ -59,7 +59,7 @@ public class Keyset extends JPanel implements KeyListener {
             handleKeyState(e, true);
             combo.addKey(e.getKeyCode()); // Comboクラスにキー入力を通知
         } catch (Exception ex) {
-            ex.printStackTrace(); // エラーログを出力
+            // ex.printStackTrace(); // エラーログを出力
         }
     }
 
@@ -68,7 +68,7 @@ public class Keyset extends JPanel implements KeyListener {
         try {
             handleKeyState(e, false);
         } catch (Exception ex) {
-            ex.printStackTrace(); // エラーログを出力
+            // ex.printStackTrace(); // エラーログを出力
         }
     }
 
@@ -100,7 +100,7 @@ public class Keyset extends JPanel implements KeyListener {
                         try {
                             updateDirection();
                         } catch (Exception e) {
-                            e.printStackTrace(); // エラーログを出力
+                            // e.printStackTrace(); // エラーログを出力
                         }
                         updatePending = false;
                     });
@@ -133,7 +133,7 @@ public class Keyset extends JPanel implements KeyListener {
                 lastDirection = "";
             }
         } catch (Exception e) {
-            e.printStackTrace(); // エラーログを出力
+            // e.printStackTrace(); // エラーログを出力
         }
     }
 
@@ -180,7 +180,7 @@ public class Keyset extends JPanel implements KeyListener {
             }
             return directionBuilder.toString();
         } catch (Exception e) {
-            e.printStackTrace(); // エラーログを出力
+            // e.printStackTrace(); // エラーログを出力
             return "";
         }
     }
@@ -211,7 +211,7 @@ public class Keyset extends JPanel implements KeyListener {
             Image newImg = img.getScaledInstance(imageSize, imageSize, Image.SCALE_SMOOTH);
             return new ImageIcon(newImg);
         } catch (Exception e) {
-            e.printStackTrace(); // ログにエラーを出力
+            // e.printStackTrace(); // ログにエラーを出力
             return new ImageIcon(); // デフォルトのアイコンを返す
         }
     }

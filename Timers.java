@@ -24,7 +24,7 @@ public class Timers {
             try {
                 updateCounters();
             } catch (Exception ex) {
-                ex.printStackTrace(); // エラーログを出力
+                // ex.printStackTrace(); // エラーログを出力
             }
         })); // 0.017秒ごとに実行
         swingTimer.start();
@@ -61,7 +61,7 @@ public class Timers {
             }
             timerTextArea.setText(sb.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // エラーログを出力
+            // e.printStackTrace(); // エラーログを出力
         }
     }
 }
