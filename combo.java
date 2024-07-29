@@ -7,12 +7,12 @@ public class Combo {
     private final LinkedList<Integer> keySequence;
     private final int inputCount;
     private ComboListener listener;
-    private final Map<String, int[][]> commandMap; // int[]からint[][]に変更
+    private final Map<String, int[][]> commandMap;
 
     public Combo() {
         keySequence = new LinkedList<>();
         commandMap = initializeCommands();
-        inputCount = calculateMaxSequenceLength(); // 最大シーケンス長を動的に設定
+        inputCount = calculateMaxSequenceLength();
     }
 
     public void setComboListener(ComboListener listener) {
@@ -23,11 +23,11 @@ public class Combo {
         keySequence.add(keyCode);
 
         if (keySequence.size() > inputCount) {
-            keySequence.removeFirst(); // 古いキーを削除
+            keySequence.removeFirst();
         }
 
-        System.out.println("Key added: " + KeyEvent.getKeyText(keyCode)); // デバッグ出力
-        System.out.println("Current sequence: " + keySequence); // デバッグ出力
+        System.out.println("Key added: " + KeyEvent.getKeyText(keyCode));
+        System.out.println("Current sequence: " + keySequence);
 
         detectAndNotify();
     }
@@ -38,7 +38,7 @@ public class Combo {
                 if (listener != null) {
                     listener.onComboDetected(entry.getKey());
                 }
-                clearCommandSequence(entry.getValue()[0].length); // コマンドのシーケンスを削除
+                clearCommandSequence(entry.getValue()[0].length);
                 return;
             }
         }
@@ -58,7 +58,7 @@ public class Combo {
                 }
             }
             if (match) {
-                System.out.println("Command detected: " + commandSequenceToString(commandSequence)); // デバッグ出力
+                System.out.println("Command detected: " + commandSequenceToString(commandSequence));
                 return true;
             }
         }
@@ -71,7 +71,7 @@ public class Combo {
                 keySequence.removeFirst();
             }
         }
-        System.out.println("Sequence cleared"); // デバッグ出力
+        System.out.println("Sequence cleared");
     }
 
     private String commandSequenceToString(int[] commandSequence) {
@@ -85,16 +85,15 @@ public class Combo {
     private Map<String, int[][]> initializeCommands() {
         Map<String, int[][]> map = new HashMap<>();
         map.put("波動拳", new int[][]{
-            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_O},    // ↓ ↘︎ → 強P
-            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_U},    // ↓ ↘︎ → 弱P
-            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_I}     // ↓ ↘︎ → 中P
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_O},    // ↓ ↘︎ → 強P
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_U},    // ↓ ↘︎ → 弱P
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_I}     // ↓ ↘︎ → 中P
         });
         map.put("昇龍拳", new int[][]{
-            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_O},    // → ↓ ↘︎ 強P
-            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_U},    // → ↓ ↘︎ 弱P
-            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_I}     // → ↓ ↘︎ 中P
+            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_O},    // → ↓ ↘︎ 強P
+            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_U},    // → ↓ ↘︎ 弱P
+            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_I}     // → ↓ ↘︎ 中P
         });
-        // ここで追加のコマンドを定義可能
         return map;
     }
 
