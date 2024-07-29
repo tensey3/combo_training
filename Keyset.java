@@ -55,13 +55,21 @@ public class Keyset extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        handleKeyState(e, true);
-        combo.addKey(e.getKeyCode()); // Comboクラスにキー入力を通知
+        try {
+            handleKeyState(e, true);
+            combo.addKey(e.getKeyCode()); // Comboクラスにキー入力を通知
+        } catch (Exception ex) {
+            ex.printStackTrace(); // エラーログを出力
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        handleKeyState(e, false);
+        try {
+            handleKeyState(e, false);
+        } catch (Exception ex) {
+            ex.printStackTrace(); // エラーログを出力
+        }
     }
 
     private void handleKeyState(KeyEvent e, boolean isPressed) {
@@ -89,7 +97,11 @@ public class Keyset extends JPanel implements KeyListener {
                 @Override
                 public void run() {
                     SwingUtilities.invokeLater(() -> {
-                        updateDirection();
+                        try {
+                            updateDirection();
+                        } catch (Exception e) {
+                            e.printStackTrace(); // エラーログを出力
+                        }
                         updatePending = false;
                     });
                 }
@@ -98,73 +110,82 @@ public class Keyset extends JPanel implements KeyListener {
     }
 
     public void updateDirection() {
-        String newDirection = getDirection();
-        if (!newDirection.isEmpty() && !newDirection.equals(lastDirection)) {
-            JPanel newPanel = new JPanel();
-            newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.X_AXIS)); // 同時押しの場合横並び
+        try {
+            String newDirection = getDirection();
+            if (!newDirection.isEmpty() && !newDirection.equals(lastDirection)) {
+                JPanel newPanel = new JPanel();
+                newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.X_AXIS)); // 同時押しの場合横並び
 
-            String[] directions = newDirection.split(",");
-            for (String direction : directions) {
-                ImageIcon icon = getDirectionIcon(direction.trim());
-                if (icon != null) {
-                    JLabel newDirectionLabel = new JLabel(icon);
-                    newPanel.add(newDirectionLabel);
+                String[] directions = newDirection.split(",");
+                for (String direction : directions) {
+                    ImageIcon icon = getDirectionIcon(direction.trim());
+                    if (icon != null) {
+                        JLabel newDirectionLabel = new JLabel(icon);
+                        newPanel.add(newDirectionLabel);
+                    }
                 }
+                directionPanel.add(newPanel, 0); // 新しい出力を上に追加
+                directionPanel.revalidate();
+                directionPanel.repaint();
+                lastDirection = newDirection;
+            } else if (newDirection.isEmpty()) {
+                currentDirectionLabel.setIcon(null);
+                lastDirection = "";
             }
-            directionPanel.add(newPanel, 0); // 新しい出力を上に追加
-            directionPanel.revalidate();
-            directionPanel.repaint();
-            lastDirection = newDirection;
-        } else if (newDirection.isEmpty()) {
-            currentDirectionLabel.setIcon(null);
-            lastDirection = "";
+        } catch (Exception e) {
+            e.printStackTrace(); // エラーログを出力
         }
     }
 
     public String getDirection() {
-        StringBuilder directionBuilder = new StringBuilder();
-        if ((wPressed || spacePressed) && aPressed) {
-            directionBuilder.append("↖️,");
-        } else if ((wPressed || spacePressed) && dPressed) {
-            directionBuilder.append("↗︎,");
-        } else if (sPressed && aPressed) {
-            directionBuilder.append("↙︎,");
-        } else if (sPressed && dPressed) {
-            directionBuilder.append("↘︎,");
-        } else if (wPressed || spacePressed) {
-            directionBuilder.append("↑,");
-        } else if (sPressed) {
-            directionBuilder.append("↓,");
-        } else if (aPressed) {
-            directionBuilder.append("←,");
-        } else if (dPressed) {
-            directionBuilder.append("→,");
+        try {
+            StringBuilder directionBuilder = new StringBuilder();
+            if ((wPressed || spacePressed) && aPressed) {
+                directionBuilder.append("↖️,");
+            } else if ((wPressed || spacePressed) && dPressed) {
+                directionBuilder.append("↗︎,");
+            } else if (sPressed && aPressed) {
+                directionBuilder.append("↙︎,");
+            } else if (sPressed && dPressed) {
+                directionBuilder.append("↘︎,");
+            } else if (wPressed || spacePressed) {
+                directionBuilder.append("↑,");
+            } else if (sPressed) {
+                directionBuilder.append("↓,");
+            } else if (aPressed) {
+                directionBuilder.append("←,");
+            } else if (dPressed) {
+                directionBuilder.append("→,");
+            }
+            if (jPressed) {
+                directionBuilder.append("弱K,");
+            }
+            if (kPressed) {
+                directionBuilder.append("中K,");
+            }
+            if (lPressed) {
+                directionBuilder.append("強K,");
+            }
+            if (uPressed) {
+                directionBuilder.append("弱P,");
+            }
+            if (iPressed) {
+                directionBuilder.append("中P,");
+            }
+            if (oPressed) {
+                directionBuilder.append("強P,");
+            }
+            if (directionBuilder.length() > 0) {
+                directionBuilder.setLength(directionBuilder.length() - 1); // 最後のカンマを削除
+            }
+            return directionBuilder.toString();
+        } catch (Exception e) {
+            e.printStackTrace(); // エラーログを出力
+            return "";
         }
-        if (jPressed) {
-            directionBuilder.append("弱K,");
-        }
-        if (kPressed) {
-            directionBuilder.append("中K,");
-        }
-        if (lPressed) {
-            directionBuilder.append("強K,");
-        }
-        if (uPressed) {
-            directionBuilder.append("弱P,");
-        }
-        if (iPressed) {
-            directionBuilder.append("中P,");
-        }
-        if (oPressed) {
-            directionBuilder.append("強P,");
-        }
-        if (directionBuilder.length() > 0) {
-            directionBuilder.setLength(directionBuilder.length() - 1); // 最後のカンマを削除
-        }
-        return directionBuilder.toString();
     }
 
-    //画像パスを取得するメソッドです
+    // 画像パスを取得するメソッドです
     private ImageIcon getDirectionIcon(String direction) {
         String imageName = switch (direction) {
             case "↖️" -> "images/up_left.png";
