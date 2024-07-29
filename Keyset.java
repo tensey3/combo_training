@@ -184,10 +184,14 @@ public class Keyset extends JPanel implements KeyListener {
             default -> null;
         };
         if (imageName == null) return null;
-
-        ImageIcon icon = new ImageIcon(imageName);
-        Image img = icon.getImage();
-        Image newImg = img.getScaledInstance(imageSize, imageSize, Image.SCALE_SMOOTH);
-        return new ImageIcon(newImg);
+        try {
+            ImageIcon icon = new ImageIcon(imageName);
+            Image img = icon.getImage();
+            Image newImg = img.getScaledInstance(imageSize, imageSize, Image.SCALE_SMOOTH);
+            return new ImageIcon(newImg);
+        } catch (Exception e) {
+            e.printStackTrace(); // ログにエラーを出力
+            return new ImageIcon(); // デフォルトのアイコンを返す
+        }
     }
 }
