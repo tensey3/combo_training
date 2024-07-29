@@ -9,8 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Flam extends JFrame implements Combo.ComboListener {
     public Timers timers; // Timersインスタンスをフィールドとして保持
@@ -100,12 +98,7 @@ public class Flam extends JFrame implements Combo.ComboListener {
         if (clearTimer != null) {
             clearTimer.stop(); // 既存のタイマーがある場合は停止
         }
-        clearTimer = new Timer(2000, new ActionListener() { // 2秒後にクリア
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                comboTextArea.setText(""); // コンボ表示をクリア
-            }
-        });
+        clearTimer = new Timer(2000, e -> comboTextArea.setText("")); // ラムダ式に変更
         clearTimer.setRepeats(false); // タイマーを一度だけ実行するように設定
         clearTimer.start();
     }

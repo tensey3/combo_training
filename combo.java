@@ -20,32 +20,24 @@ public class Combo {
     }
 
     public void addKey(int keyCode) {
-        try {
-            keySequence.add(keyCode);
+        keySequence.add(keyCode);
 
-            if (keySequence.size() > inputCount) {
-                keySequence.removeFirst(); // 古いキーを削除
-            }
-
-            detectAndNotify();
-        } catch (Exception e) {
-            e.printStackTrace(); // エラーログを出力
+        if (keySequence.size() > inputCount) {
+            keySequence.removeFirst(); // 古いキーを削除
         }
+
+        detectAndNotify();
     }
 
     private void detectAndNotify() {
-        try {
-            for (Map.Entry<String, int[][]> entry : commandMap.entrySet()) {
-                if (detectCommand(entry.getValue())) {
-                    if (listener != null) {
-                        listener.onComboDetected(entry.getKey());
-                    }
-                    clearCommandSequence(entry.getValue()[0].length); // コマンドのシーケンスを削除
-                    return;
+        for (Map.Entry<String, int[][]> entry : commandMap.entrySet()) {
+            if (detectCommand(entry.getValue())) {
+                if (listener != null) {
+                    listener.onComboDetected(entry.getKey());
                 }
+                clearCommandSequence(entry.getValue()[0].length); // コマンドのシーケンスを削除
+                return;
             }
-        } catch (Exception e) {
-            e.printStackTrace(); // エラーログを出力
         }
     }
 
@@ -71,53 +63,39 @@ public class Combo {
     }
 
     private void clearCommandSequence(int length) {
-        try {
-            for (int i = 0; i < length; i++) {
-                if (!keySequence.isEmpty()) {
-                    keySequence.removeFirst();
-                }
+        for (int i = 0; i < length; i++) {
+            if (!keySequence.isEmpty()) {
+                keySequence.removeFirst();
             }
-        } catch (Exception e) {
-            e.printStackTrace(); // エラーログを出力
         }
     }
 
     private Map<String, int[][]> initializeCommands() {
-        try {
-            Map<String, int[][]> map = new HashMap<>();
-            map.put("波動拳", new int[][]{
-                {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_O},    // ↓ ↘︎ → 強P
-                {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_U},    // ↓ ↘︎ → 弱P
-                {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_I}     // ↓ ↘︎ → 中P
-            });
-            map.put("昇龍拳", new int[][]{
-                {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_O},    // → ↓ ↘︎ 強P
-                {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_U},    // → ↓ ↘︎ 弱P
-                {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_I}     // → ↓ ↘︎ 中P
-            });
-            // ここで追加のコマンドを定義可能
-            return map;
-        } catch (Exception e) {
-            e.printStackTrace(); // エラーログを出力
-            return new HashMap<>();
-        }
+        Map<String, int[][]> map = new HashMap<>();
+        map.put("波動拳", new int[][]{
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_O},    // ↓ ↘︎ → 強P
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_U},    // ↓ ↘︎ → 弱P
+            {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_D, KeyEvent.VK_I}     // ↓ ↘︎ → 中P
+        });
+        map.put("昇龍拳", new int[][]{
+            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_O},    // → ↓ ↘︎ 強P
+            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_U},    // → ↓ ↘︎ 弱P
+            {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_I}     // → ↓ ↘︎ 中P
+        });
+        // ここで追加のコマンドを定義可能
+        return map;
     }
 
     private int calculateMaxSequenceLength() {
-        try {
-            int maxLength = 0;
-            for (int[][] sequences : commandMap.values()) {
-                for (int[] sequence : sequences) {
-                    if (sequence.length > maxLength) {
-                        maxLength = sequence.length;
-                    }
+        int maxLength = 0;
+        for (int[][] sequences : commandMap.values()) {
+            for (int[] sequence : sequences) {
+                if (sequence.length > maxLength) {
+                    maxLength = sequence.length;
                 }
             }
-            return maxLength;
-        } catch (Exception e) {
-            e.printStackTrace(); // エラーログを出力
-            return 0;
         }
+        return maxLength;
     }
 
     public interface ComboListener {
