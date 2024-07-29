@@ -26,6 +26,9 @@ public class Combo {
             keySequence.removeFirst(); // 古いキーを削除
         }
 
+        System.out.println("Key added: " + KeyEvent.getKeyText(keyCode)); // デバッグ出力
+        System.out.println("Current sequence: " + keySequence); // デバッグ出力
+
         detectAndNotify();
     }
 
@@ -55,7 +58,7 @@ public class Combo {
                 }
             }
             if (match) {
-                System.out.println("Command detected: " + commandSequence); // デバッグ出力
+                System.out.println("Command detected: " + commandSequenceToString(commandSequence)); // デバッグ出力
                 return true;
             }
         }
@@ -68,6 +71,15 @@ public class Combo {
                 keySequence.removeFirst();
             }
         }
+        System.out.println("Sequence cleared"); // デバッグ出力
+    }
+
+    private String commandSequenceToString(int[] commandSequence) {
+        StringBuilder sb = new StringBuilder();
+        for (int key : commandSequence) {
+            sb.append(KeyEvent.getKeyText(key)).append(" ");
+        }
+        return sb.toString().trim();
     }
 
     private Map<String, int[][]> initializeCommands() {
