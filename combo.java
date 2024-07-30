@@ -4,69 +4,69 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Combo {
-    private final LinkedList<KeyPress> keys;
-    private final int maxInputCount;
-    private ComboListener listener;
-    private final Map<String, int[][]> commands;
+    private final LinkedList<KeyPress> keyList;
+    private final int maxKeys;
+    private Listener listener;
+    private final Map<String, int[][]> combos;
     private static final int TIME_LIMIT = 200; // 200ミリ秒以内の入力を許容
 
     public Combo() {
-        keys = new LinkedList<>();
-        commands = initCommands();
-        maxInputCount = getMaxSeqLength();
+        keyList = new LinkedList<>();
+        combos = initCombos();
+        maxKeys = getMaxComboLength();
     }
 
-    public void setListener(ComboListener listener) {
+    public void setListener(Listener listener) {
         this.listener = listener;
     }
 
     public void addKey(int keyCode) {
         long currentTime = System.currentTimeMillis();
-        keys.add(new KeyPress(keyCode, currentTime));
+        keyList.add(new KeyPress(keyCode, currentTime));
 
-        if (keys.size() > maxInputCount) {
-            keys.removeFirst();
+        if (keyList.size() > maxKeys) {
+            keyList.removeFirst();
         }
 
         System.out.println("Key added: " + KeyEvent.getKeyText(keyCode));
-        System.out.println("Current sequence: " + keys);
+        System.out.println("Current sequence: " + keyList);
 
-        checkCommands();
+        checkCombos();
     }
 
-    private void checkCommands() {
-        if (checkCommand(commands.get("昇龍拳"))) {
+    private void checkCombos() {
+        if (checkCombo(combos.get("昇龍拳"))) {
             if (listener != null) {
                 listener.onComboDetected("昇龍拳");
             }
-            clearSeq(commands.get("昇龍拳")[0].length);
+            clearKeys(combos.get("昇龍拳")[0].length);
             return;
         }
 
-        if (checkCommand(commands.get("波動拳"))) {
+        if (checkCombo(combos.get("波動拳"))) {
             if (listener != null) {
                 listener.onComboDetected("波動拳");
             }
-            clearSeq(commands.get("波動拳")[0].length);
+            clearKeys(combos.get("波動拳")[0].length);
             return;
         }
 
-        if (checkCommand(commands.get("竜巻旋風脚"))) {
+        if (checkCombo(combos.get("竜巻旋風脚"))) {
             if (listener != null) {
                 listener.onComboDetected("竜巻旋風脚");
             }
-            clearSeq(commands.get("竜巻旋風脚")[0].length);
+            clearKeys(combos.get("竜巻旋風脚")[0].length);
         }
     }
 
-    private boolean checkCommand(int[][] sequences) {
-        if (keys.size() < sequences[0].length) {
+    private boolean checkCombo(int[][] sequences) {
+        if (keyList.size() < sequences[0].length) {
             return false;
         }
 
         for (int[] sequence : sequences) {
             if (checkWithTimeLimit(sequence)) {
-                System.out.println("Command detected: " + seqToString(sequence));
+                System.out.println("Combo detected: " + seqToString(sequence));
                 return true;
             }
         }
@@ -78,11 +78,11 @@ public class Combo {
         long prevTime = 0;
 
         for (int i = 0; i < sequence.length; i++) {
-            KeyPress keyPress = keys.get(keys.size() - sequence.length + i);
+            KeyPress keyPress = keyList.get(keyList.size() - sequence.length + i);
 
             if (keyPress.keyCode == sequence[i] ||
                 (i == 1 && sequence[i] == (KeyEvent.VK_S | KeyEvent.VK_D) && keyPress.keyCode == KeyEvent.VK_D &&
-                keys.get(keys.size() - sequence.length + i - 1).keyCode == KeyEvent.VK_S)) {
+                keyList.get(keyList.size() - sequence.length + i - 1).keyCode == KeyEvent.VK_S)) {
                 if (prevTime == 0 || (keyPress.time - prevTime <= TIME_LIMIT)) {
                     matchCount++;
                     prevTime = keyPress.time;
@@ -96,10 +96,10 @@ public class Combo {
         return matchCount == sequence.length;
     }
 
-    private void clearSeq(int length) {
+    private void clearKeys(int length) {
         for (int i = 0; i < length; i++) {
-            if (!keys.isEmpty()) {
-                keys.removeFirst();
+            if (!keyList.isEmpty()) {
+                keyList.removeFirst();
             }
         }
         System.out.println("Sequence cleared");
@@ -113,7 +113,7 @@ public class Combo {
         return sb.toString().trim();
     }
 
-    private Map<String, int[][]> initCommands() {
+    private Map<String, int[][]> initCombos() {
         Map<String, int[][]> map = new HashMap<>();
         map.put("昇龍拳", new int[][]{
             {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_O},    // → ↓ ↘︎ 強P
@@ -133,9 +133,9 @@ public class Combo {
         return map;
     }
 
-    private int getMaxSeqLength() {
+    private int getMaxComboLength() {
         int maxLength = 0;
-        for (int[][] sequences : commands.values()) {
+        for (int[][] sequences : combos.values()) {
             for (int[] sequence : sequences) {
                 if (sequence.length > maxLength) {
                     maxLength = sequence.length;
@@ -145,7 +145,7 @@ public class Combo {
         return maxLength;
     }
 
-    public interface ComboListener {
+    public interface Listener {
         void onComboDetected(String combo);
     }
 
