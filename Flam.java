@@ -50,6 +50,9 @@ public class Flam extends JFrame implements Combo.Listener {
 
         timers = new Timers(timerText, keyset);
 
+        // Timers オブジェクトのメソッドを呼び出してみる
+        timers.updateCounts();
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
