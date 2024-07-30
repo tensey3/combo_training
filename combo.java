@@ -48,6 +48,14 @@ public class Combo {
                 listener.onComboDetected("波動拳");
             }
             clearSeq(commands.get("波動拳")[0].length);
+            return;
+        }
+
+        if (checkCommand(commands.get("竜巻旋風脚"))) {
+            if (listener != null) {
+                listener.onComboDetected("竜巻旋風脚");
+            }
+            clearSeq(commands.get("竜巻旋風脚")[0].length);
         }
     }
 
@@ -72,9 +80,9 @@ public class Combo {
         for (int i = 0; i < sequence.length; i++) {
             KeyPress keyPress = keys.get(keys.size() - sequence.length + i);
 
-            if (keyPress.keyCode == sequence[i] || 
-                (i == 1 && sequence[i] == (KeyEvent.VK_S | KeyEvent.VK_D) && keyPress.keyCode == KeyEvent.VK_D && 
-                 keys.get(keys.size() - sequence.length + i - 1).keyCode == KeyEvent.VK_S)) {
+            if (keyPress.keyCode == sequence[i] ||
+                (i == 1 && sequence[i] == (KeyEvent.VK_S | KeyEvent.VK_D) && keyPress.keyCode == KeyEvent.VK_D &&
+                keys.get(keys.size() - sequence.length + i - 1).keyCode == KeyEvent.VK_S)) {
                 if (prevTime == 0 || (keyPress.time - prevTime <= TIME_LIMIT)) {
                     matchCount++;
                     prevTime = keyPress.time;
@@ -116,6 +124,11 @@ public class Combo {
             {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_O},    // ↓ ↘︎ → 強P
             {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_U},    // ↓ ↘︎ → 弱P
             {KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_I}     // ↓ ↘︎ → 中P
+        });
+        map.put("竜巻旋風脚", new int[][]{
+            {KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_J},    // ↓ ↙︎ ← 強P
+            {KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_K},    // ↓ ↙︎ ← 弱P
+            {KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_L}     // ↓ ↙︎ ← 中P
         });
         return map;
     }
