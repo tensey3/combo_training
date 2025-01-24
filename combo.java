@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-class Combo {
+public class Combo {
     private final LinkedList<KeyPress> keyList;
     private final int maxKeys;
     private Listener listener;
